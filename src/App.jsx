@@ -23,7 +23,7 @@ export default function App() {
               type="file"
               accept=".csv"
               onChange={(e) => e.target.files && handleFile(e.target.files[0])}
-              className="px-4 py-2 border border-border/40 rounded-lg shadow-sm bg-card hover:bg-card-hover transition-colors text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/20 file:text-primary hover:file:bg-primary/30"
+              className="px-0 py-2 rounded-lg shadow-sm bg-card transition-colors text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/20 file:text-primary hover:file:bg-primary/30"
             />
             {loading && (
               <div className="w-48">
