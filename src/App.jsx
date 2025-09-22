@@ -35,7 +35,7 @@ export default function App() {
       </header>
 
       <main className="max-w-7xl mx-auto space-y-6">
-        <section className="bg-card rounded-xl shadow-sm border border-border/40">
+        <section className="rounded-xl shadow-sm">
           <MetricsDashboard kpis={kpis} />
         </section>
 
