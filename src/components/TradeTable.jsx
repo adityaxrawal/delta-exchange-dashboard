@@ -59,8 +59,8 @@ export default function TradeTable({ trades = [] }) {
                       className={`${
                         k === "net_pnl"
                           ? desc
-                            ? "text-red-500"
-                            : "text-green-500"
+                            ? "text-error"
+                            : "text-success"
                           : "text-text-primary"
                       }`}
                     >
@@ -75,11 +75,12 @@ export default function TradeTable({ trades = [] }) {
         <tbody>
           {sorted.map((t, i) => {
             const profit = t.net_pnl > 0;
-            const bgColor = profit ? "bg-green-900/20" : "bg-red-900/20";
+            const bgColor = profit ? "bg-green-300/20" : "bg-red-300/20";
+            const textColor = profit ? "text-green-600" : "text-red-600";
             return (
               <tr
                 key={i}
-                className={`border-b border-border hover:bg-card-hover transition-colors ${bgColor}`}
+                className={`border-b border-border/30 hover:bg-card-hover transition-colors ${bgColor}`}
               >
                 <td className="px-4 py-3 font-medium">
                   <span className="px-2 py-1 rounded-full text-xs bg-card-alt text-text-secondary">
@@ -116,15 +117,14 @@ export default function TradeTable({ trades = [] }) {
                   })}
                 </td>
                 <td
-                  className={`px-4 py-3 font-semibold ${
-                    profit ? "text-green-500" : "text-red-500"
-                  }`}
+                  className={`px-4 py-3 font-semibold ${textColor}                  }`}
                 >
                   $
-                  {Math.abs(t.net_pnl).toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
+                  {(t.net_pnl < 0 ? "-" : "") +
+                    Math.abs(t.net_pnl).toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
                 </td>
                 <td className="px-4 py-3 text-text-secondary">
                   $

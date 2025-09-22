@@ -21,7 +21,7 @@ const CumulativePnLChart = ({ trades }) => {
   });
 
   return (
-    <div className="w-full h-full bg-card rounded-xl shadow-lg p-6 border border-border">
+    <div className="w-full h-full bg-card rounded-xl shadow-lg p-6 border border-border/40">
       <div className="mb-4">
         <h2 className="text-lg font-semibold text-text-primary">
           Cumulative P&L Curve
@@ -38,20 +38,20 @@ const CumulativePnLChart = ({ trades }) => {
           >
             <defs>
               <linearGradient id="colorPnL" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#3B82F6" stopOpacity={0} />
+                <stop offset="5%" stopColor="#83a598" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="#83a598" stopOpacity={0} />
               </linearGradient>
             </defs>
             <CartesianGrid
               strokeDasharray="3 3"
-              stroke="#374151"
+              stroke="#504945"
               opacity={0.4}
             />
             <XAxis
               dataKey="time"
-              tick={{ fill: "currentColor" }}
-              tickLine={{ stroke: "#374151" }}
-              axisLine={{ stroke: "#374151" }}
+              tick={{ fill: "#ebdbb2" }}
+              tickLine={{ stroke: "#504945" }}
+              axisLine={{ stroke: "#504945" }}
               className="text-text-secondary"
             />
             <YAxis

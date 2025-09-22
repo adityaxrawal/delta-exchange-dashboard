@@ -5,36 +5,42 @@ export default {
     extend: {
       colors: {
         // Core background and surface colors
-        background: "#0f172a",
-        card: "#1e293b",
-        "card-alt": "#293548",
-        "card-hover": "#334155",
-        border: "#334155",
+        background: "#282828",
+        card: "#32302f",
+        "card-alt": "#3c3836",
+        "card-hover": "#504945",
+        border: "#3c3836",
+        "border-light": "#504945",
 
         // Text colors
         text: {
-          primary: "#e2e8f0",
-          secondary: "#94a3b8",
-          tertiary: "#64748b",
+          primary: "#fbf1c7",
+          secondary: "#ebdbb2",
+          tertiary: "#a89984",
         },
 
         // Primary action colors
-        primary: "#3b82f6",
-        "primary-hover": "#2563eb",
-        "primary-light": "#60a5fa",
+        primary: "#fabd2f",
+        "primary-hover": "#d79921",
+        "primary-light": "#fee386",
 
-        // Success/Error colors
-        success: "#10b981",
-        error: "#ef4444",
+        // Accent colors
+        accent: "#fabd2f",
+        info: "#83a598",
+        success: "#b8bb26",
+        warning: "#fe8019",
+        error: "#fb4934",
+        purple: "#d3869b",
+        aqua: "#8ec07c",
 
         // Chart colors
         chart: {
-          grid: "#334155",
-          line: "#3b82f6",
-          area: "#3b82f6",
+          grid: "#504945",
+          line: "#83a598",
+          area: "#83a598",
           bar: {
-            positive: "#10b981",
-            negative: "#ef4444",
+            positive: "#b8bb26",
+            negative: "#fb4934",
           },
         },
       },

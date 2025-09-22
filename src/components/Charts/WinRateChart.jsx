@@ -9,7 +9,7 @@ import {
   Legend,
 } from "recharts";
 
-const COLORS = ["#10B981", "#EF4444"];
+const COLORS = ["#b8bb26", "#fb4934"]; // Gruvbox green and red
 
 const WinRateChart = ({ trades }) => {
   const wins = trades.filter((t) => t.netPnl > 0).length;
@@ -21,7 +21,7 @@ const WinRateChart = ({ trades }) => {
   ];
 
   return (
-    <div className="w-full h-full bg-card rounded-xl shadow-lg p-6 border border-border">
+    <div className="w-full h-full bg-card rounded-xl shadow-lg p-6 border border-border/40">
       <div className="mb-4">
         <h2 className="text-lg font-semibold text-text-primary">
           Win/Loss Distribution

@@ -22,6 +22,7 @@ export default function MetricsDashboard({ kpis = {} }) {
         title="Total Net P&L"
         value={formatCurrency(kpis.total_net_pnl)}
         hint={kpis.total_net_pnl > 0 ? "Total profit" : "Total loss"}
+        type={kpis.total_net_pnl > 0 ? "profit" : "loss"}
       />
       <KPICard
         title="Trading Volume"
@@ -41,11 +42,19 @@ export default function MetricsDashboard({ kpis = {} }) {
             : "0%"
         }
         hint={`${kpis.wins || 0} wins / ${kpis.num_trades || 0} trades`}
+        type={kpis.win_rate_pct > 50 ? "profit" : "loss"}
       />
       <KPICard
         title="Win/Loss Ratio"
         value={kpis.avg_win_loss_ratio?.toFixed?.(2) || "—"}
         hint="Average win / Average loss"
+        type={
+          kpis.avg_win_loss_ratio > 1
+            ? "profit"
+            : kpis.avg_win_loss_ratio < 1
+            ? "loss"
+            : "default"
+        }
       />
       <KPICard
         title="Total Fees"

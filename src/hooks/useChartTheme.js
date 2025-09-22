@@ -18,13 +18,15 @@ export function useChartTheme() {
     },
     // Common colors for charts
     colors: {
-      profit: "#10B981", // green-500
-      loss: "#EF4444", // red-500
-      primary: "#3B82F6", // blue-500
+      profit: "#34D399", // green-400
+      loss: "#F87171", // red-400
+      primary: "#60A5FA", // blue-400
       profitArea: darkMode
-        ? "rgba(16, 185, 129, 0.2)"
-        : "rgba(16, 185, 129, 0.1)",
-      lossArea: darkMode ? "rgba(239, 68, 68, 0.2)" : "rgba(239, 68, 68, 0.1)",
+        ? "rgba(52, 211, 153, 0.15)"
+        : "rgba(52, 211, 153, 0.1)",
+      lossArea: darkMode
+        ? "rgba(248, 113, 113, 0.15)"
+        : "rgba(248, 113, 113, 0.1)",
     },
   };
 }
