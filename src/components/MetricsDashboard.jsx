@@ -14,7 +14,7 @@ export default function MetricsDashboard({ kpis = {} }) {
       <KPICard title="Number of Trades" value={kpis.num_trades || 0} />
       <KPICard
         title="Win Rate"
-        value={kpis.win_rate_pct?.toFixed?.(2) + "%" || "0%"}
+        value={kpis.win_rate_pct?.toFixed?.(2) ? kpis.win_rate_pct?.toFixed?.(2) + "%" : "0%"}
       />
       <KPICard
         title="Avg Win / Avg Loss"
