@@ -28,9 +28,9 @@ export default function TradeTable({ trades = [] }) {
   }, [trades, sortKey, desc]);
 
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-auto border border-gray-200">
+    <div className="bg-card rounded-xl shadow-lg overflow-auto">
       <table className="min-w-full text-left">
-        <thead className="bg-gray-50 sticky top-0">
+        <thead className="bg-card-alt sticky top-0">
           <tr>
             {[
               "type",
@@ -46,7 +46,7 @@ export default function TradeTable({ trades = [] }) {
             ].map((k) => (
               <th
                 key={k}
-                className="px-4 py-3 uppercase text-xs font-semibold text-gray-900 cursor-pointer hover:bg-gray-100 transition-colors"
+                className="px-4 py-3 uppercase text-xs font-semibold text-text-primary cursor-pointer hover:bg-card-hover transition-colors"
                 onClick={() => {
                   setSortKey(k);
                   setDesc((s) => !s);
@@ -59,9 +59,9 @@ export default function TradeTable({ trades = [] }) {
                       className={`${
                         k === "net_pnl"
                           ? desc
-                            ? "text-red-600"
-                            : "text-green-600"
-                          : "text-gray-900"
+                            ? "text-red-500"
+                            : "text-green-500"
+                          : "text-text-primary"
                       }`}
                     >
                       {desc ? "↓" : "↑"}
@@ -75,41 +75,41 @@ export default function TradeTable({ trades = [] }) {
         <tbody>
           {sorted.map((t, i) => {
             const profit = t.net_pnl > 0;
-            const bgColor = profit ? "bg-green-50" : "bg-red-50";
+            const bgColor = profit ? "bg-green-900/20" : "bg-red-900/20";
             return (
               <tr
                 key={i}
-                className={`border-b border-gray-100 hover:bg-gray-50 transition-colors ${bgColor}`}
+                className={`border-b border-border hover:bg-card-hover transition-colors ${bgColor}`}
               >
                 <td className="px-4 py-3 font-medium">
-                  <span className="px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-900">
+                  <span className="px-2 py-1 rounded-full text-xs bg-card-alt text-text-secondary">
                     {t.type}
                   </span>
                 </td>
-                <td className="px-4 py-3 font-medium text-gray-900 ">
+                <td className="px-4 py-3 font-medium text-text-primary">
                   {t.symbol}
                 </td>
-                <td className="px-4 py-3 text-gray-600 ">
+                <td className="px-4 py-3 text-text-secondary">
                   {format(new Date(t.entry_time), "yyyy-MM-dd HH:mm:ss")}
                 </td>
-                <td className="px-4 py-3 text-gray-600 ">
+                <td className="px-4 py-3 text-text-secondary">
                   {format(new Date(t.exit_time), "yyyy-MM-dd HH:mm:ss")}
                 </td>
-                <td className="px-4 py-3 font-medium text-gray-900 ">
+                <td className="px-4 py-3 font-medium text-text-primary">
                   $
                   {t.entry_price.toLocaleString(undefined, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })}
                 </td>
-                <td className="px-4 py-3 font-medium text-gray-900 ">
+                <td className="px-4 py-3 font-medium text-text-primary">
                   $
                   {t.exit_price.toLocaleString(undefined, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })}
                 </td>
-                <td className="px-4 py-3 text-gray-600 ">
+                <td className="px-4 py-3 text-text-secondary">
                   {t.entry_qty.toLocaleString(undefined, {
                     minimumFractionDigits: 6,
                     maximumFractionDigits: 6,
@@ -117,9 +117,7 @@ export default function TradeTable({ trades = [] }) {
                 </td>
                 <td
                   className={`px-4 py-3 font-semibold ${
-                    profit
-                      ? "text-green-600 dark:text-green-400"
-                      : "text-red-600 dark:text-red-400"
+                    profit ? "text-green-500" : "text-red-500"
                   }`}
                 >
                   $
@@ -128,14 +126,14 @@ export default function TradeTable({ trades = [] }) {
                     maximumFractionDigits: 2,
                   })}
                 </td>
-                <td className="px-4 py-3 text-gray-600 ">
+                <td className="px-4 py-3 text-text-secondary">
                   $
                   {t.total_fees.toLocaleString(undefined, {
                     minimumFractionDigits: 4,
                     maximumFractionDigits: 4,
                   })}
                 </td>
-                <td className="px-4 py-3 text-gray-600 ">
+                <td className="px-4 py-3 text-text-secondary">
                   {Math.round(t.duration_s)}s
                 </td>
               </tr>

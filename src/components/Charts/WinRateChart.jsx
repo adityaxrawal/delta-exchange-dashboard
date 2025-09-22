@@ -21,12 +21,14 @@ const WinRateChart = ({ trades }) => {
   ];
 
   return (
-    <div className="w-full h-full bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 border border-gray-100">
+    <div className="w-full h-full bg-card rounded-xl shadow-lg p-6 border border-border">
       <div className="mb-4">
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+        <h2 className="text-lg font-semibold text-text-primary">
           Win/Loss Distribution
         </h2>
-        <p className="text-sm text-gray-500">Trade success rate analysis</p>
+        <p className="text-sm text-text-secondary">
+          Trade success rate analysis
+        </p>
       </div>
       <div className="w-full h-[calc(100%-4rem)]">
         <ResponsiveContainer width="100%" height="100%">
@@ -43,26 +45,33 @@ const WinRateChart = ({ trades }) => {
                 `${name} ${(percent * 100).toFixed(0)}%`
               }
               labelLine={false}
+              className="text-text-primary"
             >
               {data.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={COLORS[index]}
-                  stroke="white"
+                  stroke="rgb(30 41 59)"
                   strokeWidth={2}
                 />
               ))}
             </Pie>
             <Tooltip
               contentStyle={{
-                backgroundColor: "rgba(255, 255, 255, 0.95)",
-                border: "1px solid #E5E7EB",
+                backgroundColor: "rgb(30 41 59 / 0.95)",
+                border: "1px solid rgb(51 65 85)",
                 borderRadius: "6px",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                color: "rgb(226 232 240)",
               }}
               formatter={(value) => [`${value} trades`, ""]}
             />
-            <Legend verticalAlign="bottom" height={36} iconType="circle" />
+            <Legend
+              verticalAlign="bottom"
+              height={36}
+              iconType="circle"
+              className="text-text-secondary"
+            />
           </PieChart>
         </ResponsiveContainer>
       </div>

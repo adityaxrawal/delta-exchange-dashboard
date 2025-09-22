@@ -12,10 +12,10 @@ export default function App() {
   const { loading, progress, trades, kpis, handleFile } = useTradeData();
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-background p-6">
       <header className="max-w-7xl mx-auto mb-8">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-card p-6 rounded-xl shadow-sm border border-border">
+          <h1 className="text-2xl md:text-3xl font-bold text-text-primary">
             Delta Exchange Analytics Dashboard
           </h1>
           <div className="flex items-center gap-4">
@@ -23,7 +23,7 @@ export default function App() {
               type="file"
               accept=".csv"
               onChange={(e) => e.target.files && handleFile(e.target.files[0])}
-              className="px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white hover:bg-gray-50 transition-colors file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              className="px-4 py-2 border border-border rounded-lg shadow-sm bg-card hover:bg-opacity-80 text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-900/50 file:text-blue-300 hover:file:bg-blue-800/50"
             />
             {loading && (
               <div className="w-48">
@@ -35,12 +35,12 @@ export default function App() {
       </header>
 
       <main className="max-w-7xl mx-auto space-y-6">
-        <section className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <section className="bg-card rounded-xl shadow-sm">
           <MetricsDashboard kpis={kpis} />
         </section>
 
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6 auto-rows-[500px]">
-          <div className="h-full">
+          <div className="h-full bg-card rounded-xl">
             <CumulativePnLChart
               trades={trades.map((t) => ({
                 ...t,
@@ -49,7 +49,7 @@ export default function App() {
               }))}
             />
           </div>
-          <div className="h-full">
+          <div className="h-full bg-card rounded-xl">
             <ProfitLossChart
               trades={trades.map((t) => ({
                 ...t,
@@ -58,7 +58,7 @@ export default function App() {
               }))}
             />
           </div>
-          <div className="h-full">
+          <div className="h-full bg-card rounded-xl">
             <MonthlyPerformanceChart
               trades={trades.map((t) => ({
                 ...t,
@@ -67,19 +67,19 @@ export default function App() {
               }))}
             />
           </div>
-          <div className="h-full">
+          <div className="h-full bg-card rounded-xl">
             <WinRateChart
               trades={trades.map((t) => ({ ...t, netPnl: t.net_pnl }))}
             />
           </div>
         </section>
 
-        <section className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-800">
+        <section className="bg-card rounded-xl shadow-sm border border-border overflow-hidden">
+          <div className="p-6 border-b border-border">
+            <h2 className="text-lg font-semibold text-text-primary">
               Trade History
             </h2>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-text-secondary">
               Detailed record of all trading activities
             </p>
           </div>
