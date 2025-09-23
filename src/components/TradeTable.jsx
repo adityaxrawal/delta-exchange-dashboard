@@ -75,12 +75,12 @@ export default function TradeTable({ trades = [] }) {
         <tbody>
           {sorted.map((t, i) => {
             const profit = t.net_pnl > 0;
-            const bgColor = profit ? "bg-green-300/20" : "bg-red-300/20";
+            // const bgColor = profit ? "bg-green-100/20" : "bg-red-100/20";
             const textColor = profit ? "text-green-600" : "text-red-600";
             return (
               <tr
                 key={i}
-                className={`border-b border-border/30 hover:bg-card-hover transition-colors ${bgColor}`}
+                className={`border-b border-border/30 hover:bg-card-hover transition-colors`}
               >
                 <td className="px-4 py-3 font-medium">
                   <span className="px-2 py-1 rounded-full text-xs bg-card-alt text-text-secondary">
