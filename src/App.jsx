@@ -8,6 +8,7 @@ import CumulativePnLChart from "./components/Charts/CumalativePnLChart";
 import MonthlyPerformanceChart from "./components/Charts/MonthlyPerformaceChart";
 import ProfitLossChart from "./components/Charts/ProfitLossChart";
 import WinRateChart from "./components/Charts/WinRateChart";
+import { Analytics } from "@vercel/analytics/next";
 
 export default function App() {
   const {
@@ -34,6 +35,7 @@ export default function App() {
           setError(null);
         }}
       />
+      <Analytics />
       <div className="min-h-screen bg-background p-6">
         <header className="max-w-7xl mx-auto mb-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-card p-6 rounded-xl shadow-sm border border-border/40">
