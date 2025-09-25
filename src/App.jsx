@@ -8,7 +8,7 @@ import CumulativePnLChart from "./components/Charts/CumalativePnLChart";
 import MonthlyPerformanceChart from "./components/Charts/MonthlyPerformaceChart";
 import ProfitLossChart from "./components/Charts/ProfitLossChart";
 import WinRateChart from "./components/Charts/WinRateChart";
-import { Analytics } from "@vercel/analytics/next";
+import { Analytics } from "@vercel/analytics/react";
 
 export default function App() {
   const {
