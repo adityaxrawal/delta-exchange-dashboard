@@ -44,7 +44,6 @@ export default function TradeTable({ trades = [] }) {
               "total_fees",
               "net_pnl",
               "wallet_balance",
-              "duration_s",
             ].map((k) => (
               <th
                 key={k}
@@ -157,9 +156,6 @@ export default function TradeTable({ trades = [] }) {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })}
-                </td>
-                <td className="px-4 py-3 text-text-secondary">
-                  {Math.round(t.duration_s)}s
                 </td>
               </tr>
             );
