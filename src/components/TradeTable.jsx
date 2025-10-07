@@ -86,8 +86,14 @@ export default function TradeTable({ trades = [] }) {
                 className={`border-b border-border/30 hover:bg-card-hover transition-colors`}
               >
                 <td className="px-4 py-3 font-medium">
-                  <span className="px-2 py-1 rounded-full text-xs bg-card-alt text-text-secondary">
-                    {t.type}
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                      t.type === "long"
+                        ? "bg-green-500/20 text-green-600"
+                        : "bg-red-500/20 text-red-600"
+                    }`}
+                  >
+                    {t.type.toUpperCase()}
                   </span>
                 </td>
                 <td className="px-4 py-3 font-medium text-text-primary">
