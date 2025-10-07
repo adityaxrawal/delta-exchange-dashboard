@@ -30,8 +30,8 @@ const CumulativePnLChart = ({ trades, kpis }) => {
   }
 
   const INITIAL_BALANCE = kpis.initial_balance;
-  let cumulative = INITIAL_BALANCE;
 
+  // Use actual wallet_balance from each trade (calculated from asset history)
   // Add initial balance as starting point
   const data = [
     {
@@ -39,10 +39,9 @@ const CumulativePnLChart = ({ trades, kpis }) => {
       cumulativePnL: INITIAL_BALANCE,
     },
     ...trades.map((t) => {
-      cumulative += t.netPnl;
       return {
         time: new Date(t.exitTime || t.entryTime).toLocaleDateString(),
-        cumulativePnL: cumulative,
+        cumulativePnL: t.wallet_balance, // Use actual wallet balance from trade
       };
     }),
   ];
