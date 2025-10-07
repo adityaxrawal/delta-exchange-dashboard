@@ -10,25 +10,51 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const ProfitLossChart = ({ trades }) => {
-  // Convert trades into cumulative PnL over time
-  let cumulative = 0;
-  const data = trades.map((t) => {
-    cumulative += t.netPnl;
-    return {
-      time: new Date(t.exitTime || t.entryTime).toLocaleDateString(),
-      pnl: cumulative,
-    };
-  });
+const ProfitLossChart = ({ trades, kpis }) => {
+  // Ensure we have valid initial balance
+  if (!kpis?.initial_balance) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-red-500">Unable to load initial balance data</p>
+      </div>
+    );
+  }
+
+  // Ensure we have trades
+  if (!trades || trades.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-gray-500">No trades available to display</p>
+      </div>
+    );
+  }
+
+  const INITIAL_BALANCE = kpis.initial_balance;
+
+  // Use actual wallet_balance from each trade (calculated from asset history)
+  // Add initial balance as starting point
+  const data = [
+    {
+      time: "Start",
+      pnl: INITIAL_BALANCE,
+    },
+    ...trades.map((t) => {
+      return {
+        time: new Date(t.exitTime || t.entryTime).toLocaleDateString(),
+        pnl: t.wallet_balance, // Use actual wallet balance from trade
+      };
+    }),
+  ];
 
   return (
     <div className="w-full h-full bg-card rounded-xl shadow-lg p-6 border border-border">
       <div className="mb-4">
         <h2 className="text-lg font-semibold text-text-primary">
-          P&L Performance
+          Balance Performance
         </h2>
         <p className="text-sm text-text-secondary">
-          Profit/Loss trends analysis
+          Account balance from ${INITIAL_BALANCE.toLocaleString()} starting
+          capital
         </p>
       </div>
       <div className="w-full h-[calc(100%-4rem)]">
@@ -64,7 +90,7 @@ const ProfitLossChart = ({ trades }) => {
                 boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                 color: "rgb(226 232 240)",
               }}
-              formatter={(value) => [`$${value.toLocaleString()}`, "P&L"]}
+              formatter={(value) => [`$${value.toLocaleString()}`, "Balance"]}
             />
             <Line
               type="monotone"
