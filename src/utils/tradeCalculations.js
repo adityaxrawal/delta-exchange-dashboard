@@ -392,32 +392,15 @@ export function processFillsToTrades(
         }
       }
 
-      // Debug log for first few trades
-      if (index < 10) {
-        console.log(
-          `Trade ${index + 1}: ${
+      // Debug log for first few trades (only if not found to avoid spam)
+      if (index < 5 && !found) {
+        console.warn(
+          `⚠️ Trade ${index + 1}: ${
             t.symbol
           } exit at ${exitTimeStr}, balance: $${tradeBalance.toFixed(
             2
-          )}, matched by: ${matchedBy}${found ? "" : " ⚠️ NOT FOUND"}`
+          )}, matched by: ${matchedBy} - NOT FOUND`
         );
-
-        // Extra debug for first trade
-        if (index === 0 && !found) {
-          console.log("  🔍 Debug info for first trade:");
-          console.log(`    Exit time object:`, exitTime);
-          console.log(`    Exit time string:`, exitTimeStr);
-          console.log(`    Balance history length:`, balanceHistory.length);
-          if (balanceHistory.length > 0) {
-            console.log(`    First balance entry:`, {
-              date: balanceHistory[0].date,
-              dateISO: balanceHistory[0].date.toISOString().substring(0, 19),
-              type: balanceHistory[0].type,
-              contract: balanceHistory[0].contract,
-              balance: balanceHistory[0].balance,
-            });
-          }
-        }
       }
 
       return {

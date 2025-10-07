@@ -161,7 +161,8 @@ export default function useTradeData() {
     };
 
     loadFromLocalStorage();
-  }, [processData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount
 
   // Open file upload modal
   const handleUploadClick = useCallback(() => {

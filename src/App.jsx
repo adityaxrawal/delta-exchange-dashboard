@@ -60,8 +60,8 @@ export default function App() {
         suggestedBalance={suggestedBalance}
       />
       <Analytics />
-      <div className="min-h-screen bg-background p-6">
-        <header className="max-w-7xl mx-auto mb-8">
+      <div className="min-h-screen bg-background py-6">
+        <header className="max-w-[1400px] mx-auto mb-8 px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-card p-6 rounded-xl shadow-sm border border-border/40">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-text-primary">
@@ -116,7 +116,7 @@ export default function App() {
           </div>
         </header>
 
-        <main className="max-w-7xl mx-auto space-y-6 relative">
+        <main className="max-w-[1400px] mx-auto space-y-6 relative px-6">
           {/* Blur Overlay when no data */}
           {!hasData && !loading && (
             <div
