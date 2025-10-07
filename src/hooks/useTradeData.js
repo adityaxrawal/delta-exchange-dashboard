@@ -19,7 +19,7 @@ export default function useTradeData() {
   const [error, setError] = useState(null);
   const [showError, setShowError] = useState(false);
   const [fileName, setFileName] = useState(null);
-  const [initialBalance, setInitialBalance] = useState(785);
+  const [initialBalance, setInitialBalance] = useState(null); // Will be set from Asset History or user input
   const [showBalanceModal, setShowBalanceModal] = useState(false);
   const [showFileUploadModal, setShowFileUploadModal] = useState(false);
   const [pendingFile, setPendingFile] = useState(null);
@@ -50,8 +50,8 @@ export default function useTradeData() {
           );
         }
 
+        // Process trades with dynamic contract-specific configuration
         const processedTrades = processFillsToTrades(fills, {
-          lotSize: 0.001,
           multiplier: 1,
           initialBalance: balanceToUse,
           assetHistory: assetHistoryToUse,
@@ -145,8 +145,20 @@ export default function useTradeData() {
           console.log("Loading data from localStorage:", rows.length, "rows");
 
           // Process the loaded data with saved balance and asset history
-          const balanceToUse = savedBalance ? parseFloat(savedBalance) : 785;
-          processData(rows, savedFileName, balanceToUse, assetHistoryData);
+          // If we have asset history, extract balance from it
+          let balanceToUse = null;
+          if (assetHistoryData && assetHistoryData.length > 0) {
+            const summary = extractFinancialSummary(assetHistoryData);
+            balanceToUse = summary.initial_balance;
+          } else if (savedBalance) {
+            balanceToUse = parseFloat(savedBalance);
+          }
+
+          if (balanceToUse && balanceToUse > 0) {
+            processData(rows, savedFileName, balanceToUse, assetHistoryData);
+          } else {
+            console.warn("No valid initial balance found in localStorage");
+          }
 
           setLoading(false);
         }
@@ -285,7 +297,7 @@ export default function useTradeData() {
     setFileName(null);
     setAssetHistory(null);
     setAssetHistoryFileName(null);
-    setInitialBalance(785);
+    setInitialBalance(null); // Reset to null instead of hardcoded value
     console.log("Data cleared from localStorage");
   }, []);
 

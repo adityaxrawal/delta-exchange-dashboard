@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { format } from "date-fns";
 
-export default function TradeTable({ trades = [] }) {
+export default function TradeTable({ trades = [], kpis = {} }) {
   const [sortKey, setSortKey] = useState("entry_time");
   const [desc, setDesc] = useState(true);
   const sorted = useMemo(() => {
@@ -154,7 +154,9 @@ export default function TradeTable({ trades = [] }) {
                 </td>
                 <td
                   className={`px-4 py-3 font-semibold ${
-                    t.wallet_balance < 785 ? "text-red-600" : "text-green-600"
+                    t.wallet_balance < (kpis?.initial_balance || 0)
+                      ? "text-red-600"
+                      : "text-green-600"
                   }`}
                 >
                   $

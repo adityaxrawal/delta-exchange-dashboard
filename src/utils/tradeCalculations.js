@@ -1,25 +1,37 @@
 // FIFO matching and P&L calculations
 import { parseISO } from "date-fns";
 import { extractFinancialSummary } from "./assetHistoryProcessor";
+import { getLotSize, getMultiplier } from "./contractConfig";
 
 export function processFillsToTrades(
   fills,
   opts = {
-    lotSize: 0.001,
     multiplier: 1,
-    initialBalance: 785,
+    initialBalance: null,
     assetHistory: null,
   }
 ) {
-  const lotSize = opts.lotSize || 0.001;
+  // Validation: Ensure fills is an array
+  if (!Array.isArray(fills)) {
+    console.error("processFillsToTrades: fills must be an array");
+    return [];
+  }
+
+  // Note: lotSize is now determined per-contract dynamically
   const multiplier = opts.multiplier || 1;
   const assetHistory = opts.assetHistory || null;
 
   // Get initial balance from asset history if available
-  let initialBalance = opts.initialBalance || 785;
+  let initialBalance = opts.initialBalance;
   if (assetHistory && assetHistory.length > 0) {
     const summary = extractFinancialSummary(assetHistory);
     initialBalance = summary.initial_balance;
+  }
+
+  // Validation: Ensure we have initial balance
+  if (!initialBalance || initialBalance <= 0) {
+    console.error("processFillsToTrades: valid initial balance is required");
+    return [];
   }
   // ensure sorted by timestamp
   fills.sort((a, b) => new Date(a.Time) - new Date(b.Time));
@@ -60,8 +72,31 @@ export function processFillsToTrades(
     const feesPaid = Number(f["Fees paid"] ?? f.fees ?? 0);
     const rebate = Number(f["Rebate"] ?? f.rebate ?? 0);
     const netFees = feesPaid - rebate; // Net fees = fees paid - rebate
-    if (isNaN(filledQty) || isNaN(price)) continue;
-    let qtyBTC = filledQty * lotSize;
+
+    // Validation: Skip invalid fills
+    if (isNaN(filledQty) || isNaN(price)) {
+      console.warn(
+        `Skipping invalid fill: qty=${filledQty}, price=${price}`,
+        f
+      );
+      continue;
+    }
+
+    // Validation: Skip zero or negative quantities
+    if (filledQty <= 0) {
+      console.warn(`Skipping fill with non-positive quantity: ${filledQty}`, f);
+      continue;
+    }
+
+    // Validation: Skip zero or negative prices
+    if (price <= 0) {
+      console.warn(`Skipping fill with non-positive price: ${price}`, f);
+      continue;
+    }
+
+    // Use contract-specific lot size
+    const contractLotSize = getLotSize(symbol);
+    let qtyBTC = filledQty * contractLotSize;
 
     // matching: buy closes short; sell closes long
     if (side === "buy") {

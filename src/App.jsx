@@ -226,7 +226,7 @@ export default function App() {
                 Detailed record of all trading activities
               </p>
             </div>
-            <TradeTable trades={trades} />
+            <TradeTable trades={trades} kpis={kpis} />
           </section>
         </main>
       </div>

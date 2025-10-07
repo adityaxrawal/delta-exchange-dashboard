@@ -11,7 +11,25 @@ import {
 } from "recharts";
 
 const ProfitLossChart = ({ trades, kpis }) => {
-  const INITIAL_BALANCE = kpis?.initial_balance || 785;
+  // Ensure we have valid initial balance
+  if (!kpis?.initial_balance) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-red-500">Unable to load initial balance data</p>
+      </div>
+    );
+  }
+
+  // Ensure we have trades
+  if (!trades || trades.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-gray-500">No trades available to display</p>
+      </div>
+    );
+  }
+
+  const INITIAL_BALANCE = kpis.initial_balance;
   let cumulative = INITIAL_BALANCE;
 
   // Add initial balance as starting point

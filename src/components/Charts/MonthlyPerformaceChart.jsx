@@ -13,6 +13,25 @@ import {
 import { format } from "date-fns";
 
 const MonthlyPerformanceChart = ({ trades }) => {
+  // Ensure we have trades
+  if (!trades || trades.length === 0) {
+    return (
+      <div className="w-full h-full bg-card rounded-xl shadow-lg p-6 border border-border/40">
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold text-text-primary">
+            Monthly Performance
+          </h2>
+          <p className="text-sm text-text-secondary">
+            Month-by-month profit analysis
+          </p>
+        </div>
+        <div className="flex items-center justify-center h-64">
+          <p className="text-gray-500">No trades available to display</p>
+        </div>
+      </div>
+    );
+  }
+
   const monthlyPnL = {};
 
   trades.forEach((t) => {
