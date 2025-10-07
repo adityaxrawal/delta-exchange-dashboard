@@ -95,10 +95,10 @@ export default function TradeTable({ trades = [] }) {
                   {t.symbol}
                 </td>
                 <td className="px-4 py-3 text-text-secondary">
-                  {format(new Date(t.entry_time), "yyyy-MM-dd HH:mm:ss")}
+                  {format(new Date(t.entry_time), "dd MMM yyyy hh:mm a")}
                 </td>
                 <td className="px-4 py-3 text-text-secondary">
-                  {format(new Date(t.exit_time), "yyyy-MM-dd HH:mm:ss")}
+                  {format(new Date(t.exit_time), "dd MMM yyyy hh:mm a")}
                 </td>
                 <td className="px-4 py-3 font-medium text-text-primary">
                   $
