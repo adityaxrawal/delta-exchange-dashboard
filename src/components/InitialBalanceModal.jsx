@@ -1,16 +1,23 @@
 // src/components/InitialBalanceModal.jsx
 import React, { useState, useEffect } from "react";
 
-const InitialBalanceModal = ({ isVisible, onConfirm, onCancel }) => {
+const InitialBalanceModal = ({
+  isVisible,
+  onConfirm,
+  onCancel,
+  suggestedBalance,
+}) => {
   const [balance, setBalance] = useState("785");
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (isVisible) {
-      setBalance("785");
+      // Use suggested balance from Asset History if available
+      const defaultBalance = suggestedBalance || 785;
+      setBalance(defaultBalance.toString());
       setError("");
     }
-  }, [isVisible]);
+  }, [isVisible, suggestedBalance]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -37,11 +44,33 @@ const InitialBalanceModal = ({ isVisible, onConfirm, onCancel }) => {
       <div className="bg-card rounded-xl shadow-2xl border border-border/60 max-w-md w-full p-6 animate-in fade-in zoom-in duration-200">
         <div className="mb-6">
           <h2 className="text-xl font-bold text-text-primary mb-2">
-            Set Initial Wallet Balance
+            Confirm Initial Wallet Balance
           </h2>
           <p className="text-sm text-text-secondary">
-            Enter your wallet balance at the start of trading (in USD)
+            {suggestedBalance
+              ? "This balance was automatically extracted from your deposit history. You can adjust it if needed."
+              : "Enter your wallet balance at the start of trading (in USD)"}
           </p>
+          {suggestedBalance && (
+            <div className="mt-3 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
+              <p className="text-xs text-green-600 flex items-center gap-2">
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                Auto-detected from Asset History
+              </p>
+            </div>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
