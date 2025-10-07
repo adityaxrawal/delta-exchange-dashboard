@@ -10,24 +10,34 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const CumulativePnLChart = ({ trades }) => {
-  let cumulative = 0;
-  const data = trades.map((t) => {
-    cumulative += t.netPnl;
-    return {
-      time: new Date(t.exitTime || t.entryTime).toLocaleDateString(),
-      cumulativePnL: cumulative,
-    };
-  });
+const CumulativePnLChart = ({ trades, kpis }) => {
+  const INITIAL_BALANCE = kpis?.initial_balance || 785;
+  let cumulative = INITIAL_BALANCE;
+
+  // Add initial balance as starting point
+  const data = [
+    {
+      time: "Start",
+      cumulativePnL: INITIAL_BALANCE,
+    },
+    ...trades.map((t) => {
+      cumulative += t.netPnl;
+      return {
+        time: new Date(t.exitTime || t.entryTime).toLocaleDateString(),
+        cumulativePnL: cumulative,
+      };
+    }),
+  ];
 
   return (
     <div className="w-full h-full bg-card rounded-xl shadow-lg p-6 border border-border/40">
       <div className="mb-4">
         <h2 className="text-lg font-semibold text-text-primary">
-          Cumulative P&L Curve
+          Wallet Balance Progression
         </h2>
         <p className="text-sm text-text-secondary">
-          Trading performance over time
+          Balance growth from ${INITIAL_BALANCE.toLocaleString()} initial
+          capital
         </p>
       </div>
       <div className="w-full h-[calc(100%-4rem)]">
@@ -71,7 +81,7 @@ const CumulativePnLChart = ({ trades }) => {
               }}
               formatter={(value) => [
                 `$${value.toLocaleString()}`,
-                "Cumulative P&L",
+                "Wallet Balance",
               ]}
             />
             <Area

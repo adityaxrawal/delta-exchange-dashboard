@@ -4,6 +4,7 @@ import MetricsDashboard from "./components/MetricsDashboard.jsx";
 import useTradeData from "./hooks/useTradeData";
 import Loader from "./components/Loader";
 import ErrorPopup from "./components/ErrorPopup";
+import InitialBalanceModal from "./components/InitialBalanceModal";
 import CumulativePnLChart from "./components/Charts/CumalativePnLChart";
 import MonthlyPerformanceChart from "./components/Charts/MonthlyPerformaceChart";
 import ProfitLossChart from "./components/Charts/ProfitLossChart";
@@ -17,10 +18,16 @@ export default function App() {
     trades,
     kpis,
     handleFile,
+    clearData,
+    fileName,
     error,
     showError,
     setShowError,
     setError,
+    initialBalance,
+    showBalanceModal,
+    handleBalanceConfirm,
+    handleBalanceCancel,
   } = useTradeData();
 
   const hasData = trades.length > 0;
@@ -35,13 +42,25 @@ export default function App() {
           setError(null);
         }}
       />
+      <InitialBalanceModal
+        isVisible={showBalanceModal}
+        onConfirm={handleBalanceConfirm}
+        onCancel={handleBalanceCancel}
+      />
       <Analytics />
       <div className="min-h-screen bg-background p-6">
         <header className="max-w-7xl mx-auto mb-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-card p-6 rounded-xl shadow-sm border border-border/40">
-            <h1 className="text-2xl md:text-3xl font-bold text-text-primary">
-              Delta Exchange Analytics Dashboard
-            </h1>
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-text-primary">
+                Delta Exchange Analytics Dashboard
+              </h1>
+              {fileName && (
+                <p className="text-sm text-text-secondary mt-1">
+                  Loaded: <span className="font-medium">{fileName}</span>
+                </p>
+              )}
+            </div>
             <div className="flex items-center gap-4">
               <div className="relative">
                 <input
@@ -57,9 +76,17 @@ export default function App() {
                   htmlFor="file-upload"
                   className="inline-flex items-center px-4 py-2 rounded-full border-0 text-sm font-semibold bg-primary/20 text-primary hover:bg-primary/30 cursor-pointer transition-colors"
                 >
-                  Upload File
+                  {hasData ? "Upload New File" : "Upload File"}
                 </label>
               </div>
+              {hasData && !loading && (
+                <button
+                  onClick={clearData}
+                  className="inline-flex items-center px-4 py-2 rounded-full border-0 text-sm font-semibold bg-red-500/20 text-red-600 hover:bg-red-500/30 cursor-pointer transition-colors"
+                >
+                  Clear Data
+                </button>
+              )}
               {loading && (
                 <div className="w-48">
                   <Loader progress={progress} />
@@ -106,6 +133,7 @@ export default function App() {
                   netPnl: t.net_pnl,
                   exitTime: t.exit_time,
                 }))}
+                kpis={kpis}
               />
             </div>
             <div className="h-full bg-card rounded-xl border border-border/40">
@@ -115,6 +143,7 @@ export default function App() {
                   netPnl: t.net_pnl,
                   exitTime: t.exit_time,
                 }))}
+                kpis={kpis}
               />
             </div>
             <div className="h-full bg-card rounded-xl border border-border/40">

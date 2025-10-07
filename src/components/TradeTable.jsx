@@ -10,9 +10,9 @@ export default function TradeTable({ trades = [] }) {
       const av = a[sortKey];
       const bv = b[sortKey];
 
-      // Special handling for net_pnl to sort by actual value, not absolute value
-      if (sortKey === "net_pnl") {
-        return desc ? b.net_pnl - a.net_pnl : a.net_pnl - b.net_pnl;
+      // Special handling for P&L columns to sort by actual value, not absolute value
+      if (sortKey === "net_pnl" || sortKey === "gross_pnl") {
+        return desc ? bv - av : av - bv;
       }
 
       if (typeof av === "string" && Date.parse(av))
@@ -40,8 +40,10 @@ export default function TradeTable({ trades = [] }) {
               "entry_price",
               "exit_price",
               "entry_qty",
-              "net_pnl",
+              "gross_pnl",
               "total_fees",
+              "net_pnl",
+              "wallet_balance",
               "duration_s",
             ].map((k) => (
               <th
@@ -53,11 +55,13 @@ export default function TradeTable({ trades = [] }) {
                 }}
               >
                 <div className="flex items-center gap-1">
-                  <span>{k.replace(/_/g, " ")}</span>
+                  <span>
+                    {k === "gross_pnl" ? "Profit/Loss" : k.replace(/_/g, " ")}
+                  </span>
                   {sortKey === k && (
                     <span
                       className={`${
-                        k === "net_pnl"
+                        k === "net_pnl" || k === "gross_pnl"
                           ? desc
                             ? "text-error"
                             : "text-success"
@@ -117,11 +121,13 @@ export default function TradeTable({ trades = [] }) {
                   })}
                 </td>
                 <td
-                  className={`px-4 py-3 font-semibold ${textColor}                  }`}
+                  className={`px-4 py-3 font-semibold ${
+                    t.gross_pnl > 0 ? "text-green-600" : "text-red-600"
+                  }`}
                 >
                   $
-                  {(t.net_pnl < 0 ? "-" : "") +
-                    Math.abs(t.net_pnl).toLocaleString(undefined, {
+                  {(t.gross_pnl < 0 ? "-" : "") +
+                    Math.abs(t.gross_pnl).toLocaleString(undefined, {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}
@@ -131,6 +137,25 @@ export default function TradeTable({ trades = [] }) {
                   {t.total_fees.toLocaleString(undefined, {
                     minimumFractionDigits: 4,
                     maximumFractionDigits: 4,
+                  })}
+                </td>
+                <td className={`px-4 py-3 font-semibold ${textColor}`}>
+                  $
+                  {(t.net_pnl < 0 ? "-" : "") +
+                    Math.abs(t.net_pnl).toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                </td>
+                <td
+                  className={`px-4 py-3 font-semibold ${
+                    t.wallet_balance < 785 ? "text-red-600" : "text-green-600"
+                  }`}
+                >
+                  $
+                  {t.wallet_balance.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
                   })}
                 </td>
                 <td className="px-4 py-3 text-text-secondary">

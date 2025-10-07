@@ -11,6 +11,16 @@ export default function MetricsDashboard({ kpis = {} }) {
     }).format(value);
   };
 
+  const formatINR = (value) => {
+    if (!value && value !== 0) return "₹0.00";
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value);
+  };
+
   const formatBTC = (value) => {
     if (!value && value !== 0) return "0.0000 BTC";
     return `${value.toFixed(4)} BTC`;
@@ -60,6 +70,23 @@ export default function MetricsDashboard({ kpis = {} }) {
         title="Total Fees"
         value={formatCurrency(kpis.total_fees)}
         hint="Trading fees paid"
+      />
+      <KPICard
+        title="Initial Balance"
+        value={formatCurrency(kpis.initial_balance)}
+        hint="Starting wallet balance"
+      />
+      <KPICard
+        title="Final Balance"
+        value={formatCurrency(kpis.final_balance)}
+        hint="Ending wallet balance"
+        type={
+          kpis.final_balance > kpis.initial_balance
+            ? "profit"
+            : kpis.final_balance < kpis.initial_balance
+            ? "loss"
+            : "default"
+        }
       />
     </div>
   );

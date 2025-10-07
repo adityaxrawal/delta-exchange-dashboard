@@ -3,10 +3,11 @@ import { parseISO } from "date-fns";
 
 export function processFillsToTrades(
   fills,
-  opts = { lotSize: 0.001, multiplier: 1 }
+  opts = { lotSize: 0.001, multiplier: 1, initialBalance: 785 }
 ) {
   const lotSize = opts.lotSize || 0.001;
   const multiplier = opts.multiplier || 1;
+  const initialBalance = opts.initialBalance || 785;
   // ensure sorted by timestamp
   fills.sort((a, b) => new Date(a.Time) - new Date(b.Time));
 
@@ -43,7 +44,9 @@ export function processFillsToTrades(
         f["Quantity"]
     );
     const price = Number(f["Exec.Price"] ?? f.Price ?? f.price);
-    const fees = Number(f["Fees paid"] ?? f.fees ?? 0);
+    const feesPaid = Number(f["Fees paid"] ?? f.fees ?? 0);
+    const rebate = Number(f["Rebate"] ?? f.rebate ?? 0);
+    const netFees = feesPaid - rebate; // Net fees = fees paid - rebate
     if (isNaN(filledQty) || isNaN(price)) continue;
     let qtyBTC = filledQty * lotSize;
 
@@ -65,7 +68,7 @@ export function processFillsToTrades(
           exit_time: time,
           exit_price: price,
           exit_qty: matched,
-          exit_fees: fees * (matched / qtyBTC),
+          exit_fees: netFees * (matched / qtyBTC),
         });
         entry.qty -= matched;
         if (entry.qty <= 1e-12) shortStacks[symbol].shift();
@@ -76,7 +79,7 @@ export function processFillsToTrades(
           time,
           price,
           qty: remaining,
-          fees: fees * (remaining / qtyBTC),
+          fees: netFees * (remaining / qtyBTC),
         });
       }
     } else if (side === "sell") {
@@ -95,7 +98,7 @@ export function processFillsToTrades(
           exit_time: time,
           exit_price: price,
           exit_qty: matched,
-          exit_fees: fees * (matched / qtyBTC),
+          exit_fees: netFees * (matched / qtyBTC),
         });
         entry.qty -= matched;
         if (entry.qty <= 1e-12) longStacks[symbol].shift();
@@ -106,7 +109,7 @@ export function processFillsToTrades(
           time,
           price,
           qty: remaining,
-          fees: fees * (remaining / qtyBTC),
+          fees: netFees * (remaining / qtyBTC),
         });
       }
     } else {
@@ -114,18 +117,27 @@ export function processFillsToTrades(
     }
   }
 
-  // compute numeric P&L
-  return trades.map((t) => {
-    const q = t.entry_qty;
+  // compute numeric P&L first
+  const tradesWithPnL = trades.map((t) => {
+    const q = t.entry_qty; // Quantity in BTC/ETH (actual crypto amount)
     const entryFees = t.entry_fees || 0;
     const exitFees = t.exit_fees || 0;
     const totalFees = entryFees + exitFees;
     let gross = 0;
-    if (t.type === "long")
-      gross = (t.exit_price - t.entry_price) * q * multiplier;
-    else gross = (t.entry_price - t.exit_price) * q * multiplier;
+
+    // P&L formula for Delta Exchange contracts:
+    // Long: Profit when exit price > entry price
+    // Short: Profit when entry price > exit price
+    // P&L = Quantity * (Price Difference) * Multiplier
+    if (t.type === "long") {
+      gross = q * (t.exit_price - t.entry_price) * multiplier;
+    } else {
+      gross = q * (t.entry_price - t.exit_price) * multiplier;
+    }
+
     const net = gross - totalFees;
     const duration_s = (new Date(t.exit_time) - new Date(t.entry_time)) / 1000;
+
     return {
       ...t,
       gross_pnl: gross,
@@ -134,10 +146,33 @@ export function processFillsToTrades(
       duration_s,
     };
   });
+
+  // Sort trades by exit time (oldest to newest) for balance calculation
+  tradesWithPnL.sort((a, b) => new Date(a.exit_time) - new Date(b.exit_time));
+
+  // Start with initial balance
+  let runningBalance = initialBalance;
+
+  // Add wallet balance to each trade in chronological order
+  return tradesWithPnL.map((t) => {
+    // Update running balance with net P&L
+    runningBalance += t.net_pnl;
+
+    return {
+      ...t,
+      wallet_balance: runningBalance, // Running balance after this trade
+    };
+  });
 }
 
-export function computeKPIs(trades) {
-  if (!trades || trades.length === 0) return {};
+export function computeKPIs(trades, initialBalance = 785) {
+  if (!trades || trades.length === 0)
+    return {
+      initial_balance: initialBalance,
+      final_balance: initialBalance,
+    };
+
+  const INITIAL_BALANCE = initialBalance;
   const total_net = trades.reduce((s, t) => s + (t.net_pnl || 0), 0);
   const total_gross = trades.reduce((s, t) => s + (t.gross_pnl || 0), 0);
   const total_fees = trades.reduce((s, t) => s + (t.total_fees || 0), 0);
@@ -152,15 +187,25 @@ export function computeKPIs(trades) {
     : 0;
   const avg_win_loss_ratio = avg_loss > 0 ? avg_win / avg_loss : null;
   const total_volume_btc = trades.reduce((s, t) => s + t.entry_qty, 0);
+
+  // Get final balance from the last trade
+  const final_balance =
+    trades.length > 0
+      ? trades[trades.length - 1].wallet_balance
+      : INITIAL_BALANCE;
+
   return {
     total_net_pnl: total_net,
     total_gross_pnl: total_gross,
     total_fees,
     num_trades: trades.length,
     win_rate_pct: win_rate,
+    wins: wins.length,
     avg_win,
     avg_loss,
     avg_win_loss_ratio,
     total_volume_btc,
+    initial_balance: initialBalance,
+    final_balance: final_balance,
   };
 }
