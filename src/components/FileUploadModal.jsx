@@ -5,8 +5,11 @@ export default function FileUploadModal({ isVisible, onConfirm, onCancel }) {
   const [assetHistoryFile, setAssetHistoryFile] = useState(null);
 
   const handleConfirm = () => {
-    if (fillHistoryFile && assetHistoryFile) {
-      onConfirm(fillHistoryFile, assetHistoryFile);
+    if (fillHistoryFile) {
+      onConfirm({
+        fillHistory: fillHistoryFile,
+        assetHistory: assetHistoryFile,
+      });
       // Reset state
       setFillHistoryFile(null);
       setAssetHistoryFile(null);
@@ -21,6 +24,7 @@ export default function FileUploadModal({ isVisible, onConfirm, onCancel }) {
 
   if (!isVisible) return null;
 
+  const fillHistorySelected = fillHistoryFile !== null;
   const bothFilesSelected = fillHistoryFile && assetHistoryFile;
 
   return (
@@ -30,7 +34,8 @@ export default function FileUploadModal({ isVisible, onConfirm, onCancel }) {
           Upload Trading Data Files
         </h2>
         <p className="text-text-secondary text-sm mb-6">
-          Please upload both files to ensure accurate balance calculations
+          Fill History is required. Asset History is recommended for automatic
+          balance detection.
         </p>
 
         <div className="space-y-6">
@@ -109,7 +114,9 @@ export default function FileUploadModal({ isVisible, onConfirm, onCancel }) {
           <div>
             <label className="block text-sm font-semibold text-text-primary mb-3">
               2. Asset History CSV
-              <span className="text-red-500 ml-1">*</span>
+              <span className="text-blue-500 ml-1 text-xs font-normal">
+                (Optional)
+              </span>
             </label>
             <div className="relative">
               <input
@@ -208,7 +215,36 @@ export default function FileUploadModal({ isVisible, onConfirm, onCancel }) {
           </div>
         )}
 
-        {!bothFilesSelected && (
+        {fillHistorySelected && !assetHistoryFile && (
+          <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+            <div className="flex gap-3">
+              <svg
+                className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <div>
+                <p className="text-sm font-medium text-blue-600">
+                  Asset History recommended
+                </p>
+                <p className="text-xs text-blue-600/80 mt-1">
+                  For automatic initial balance detection. You can proceed
+                  without it and enter balance manually.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!fillHistorySelected && (
           <div className="mt-6 p-4 bg-amber-500/10 border border-amber-500/30 rounded-lg">
             <div className="flex gap-3">
               <svg
@@ -226,10 +262,11 @@ export default function FileUploadModal({ isVisible, onConfirm, onCancel }) {
               </svg>
               <div>
                 <p className="text-sm font-medium text-amber-600">
-                  Both files required
+                  Fill History required
                 </p>
                 <p className="text-xs text-amber-600/80 mt-1">
-                  Asset History is needed for accurate balance calculations
+                  This file contains your trading data and is required to
+                  proceed
                 </p>
               </div>
             </div>
@@ -246,14 +283,16 @@ export default function FileUploadModal({ isVisible, onConfirm, onCancel }) {
           </button>
           <button
             onClick={handleConfirm}
-            disabled={!bothFilesSelected}
+            disabled={!fillHistorySelected}
             className={`flex-1 px-4 py-2.5 rounded-lg font-medium transition-all ${
-              bothFilesSelected
+              fillHistorySelected
                 ? "bg-primary text-black font-semibold hover:bg-primary/90 shadow-lg shadow-primary/20"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed opacity-50"
             }`}
           >
-            Confirm & Continue
+            {bothFilesSelected
+              ? "Confirm & Continue"
+              : "Continue (Manual Balance)"}
           </button>
         </div>
 

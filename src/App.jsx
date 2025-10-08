@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import TradeTable from "./components/TradeTable";
 import MetricsDashboard from "./components/MetricsDashboard.jsx";
-import useTradeData from "./hooks/useTradeData";
+import { useTradeData } from "./context/TradeDataContext";
 import Loader from "./components/Loader";
 import ErrorPopup from "./components/ErrorPopup";
 import InitialBalanceModal from "./components/InitialBalanceModal";
@@ -10,6 +10,7 @@ import CumulativePnLChart from "./components/Charts/CumalativePnLChart";
 import MonthlyPerformanceChart from "./components/Charts/MonthlyPerformaceChart";
 import ProfitLossChart from "./components/Charts/ProfitLossChart";
 import WinRateChart from "./components/Charts/WinRateChart";
+import CurrencyToggle from "./components/CurrencyToggle";
 import { Analytics } from "@vercel/analytics/react";
 
 export default function App() {
@@ -28,15 +29,19 @@ export default function App() {
     showError,
     setShowError,
     setError,
-    initialBalance,
     showBalanceModal,
     showFileUploadModal,
     handleBalanceConfirm,
     handleBalanceCancel,
     suggestedBalance,
+    hasData,
+    loadFromLocalStorage,
   } = useTradeData();
 
-  const hasData = trades.length > 0;
+  // Load data from localStorage on mount
+  useEffect(() => {
+    loadFromLocalStorage();
+  }, [loadFromLocalStorage]);
 
   return (
     <React.Fragment>
@@ -80,6 +85,7 @@ export default function App() {
               )}
             </div>
             <div className="flex items-center gap-4 flex-wrap">
+              <CurrencyToggle />
               <button
                 onClick={handleUploadClick}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border-0 text-sm font-semibold bg-primary text-black font-semibold hover:bg-primary/90 cursor-pointer transition-all shadow-lg shadow-primary/20"
