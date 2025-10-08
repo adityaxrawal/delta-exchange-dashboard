@@ -1,7 +1,9 @@
 import React, { useMemo, useState } from "react";
 import { format } from "date-fns";
+import { useCurrency } from "../context/CurrencyContext";
 
 export default function TradeTable({ trades = [], kpis = {} }) {
+  const { formatCurrency } = useCurrency();
   const [sortKey, setSortKey] = useState("entry_time");
   const [desc, setDesc] = useState(true);
   const sorted = useMemo(() => {
@@ -128,15 +130,13 @@ export default function TradeTable({ trades = [], kpis = {} }) {
                     {format(new Date(t.exit_time), "dd MMM yyyy hh:mm a")}
                   </td>
                   <td className="px-4 py-3 font-medium text-text-primary">
-                    $
-                    {t.entry_price.toLocaleString(undefined, {
+                    {formatCurrency(t.entry_price, {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}
                   </td>
                   <td className="px-4 py-3 font-medium text-text-primary">
-                    $
-                    {t.exit_price.toLocaleString(undefined, {
+                    {formatCurrency(t.exit_price, {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}
@@ -152,27 +152,22 @@ export default function TradeTable({ trades = [], kpis = {} }) {
                       t.gross_pnl > 0 ? "text-green-600" : "text-red-600"
                     }`}
                   >
-                    $
-                    {(t.gross_pnl < 0 ? "-" : "") +
-                      Math.abs(t.gross_pnl).toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}
+                    {formatCurrency(t.gross_pnl, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
                   </td>
                   <td className="px-4 py-3 text-text-secondary">
-                    $
-                    {t.total_fees.toLocaleString(undefined, {
+                    {formatCurrency(t.total_fees, {
                       minimumFractionDigits: 4,
                       maximumFractionDigits: 4,
                     })}
                   </td>
                   <td className={`px-4 py-3 font-semibold ${textColor}`}>
-                    $
-                    {(t.net_pnl < 0 ? "-" : "") +
-                      Math.abs(t.net_pnl).toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}
+                    {formatCurrency(t.net_pnl, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
                   </td>
                   <td
                     className={`px-4 py-3 font-semibold ${
@@ -181,8 +176,7 @@ export default function TradeTable({ trades = [], kpis = {} }) {
                         : "text-green-600"
                     }`}
                   >
-                    $
-                    {t.wallet_balance.toLocaleString(undefined, {
+                    {formatCurrency(t.wallet_balance, {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}

@@ -11,8 +11,10 @@ import {
   Cell,
 } from "recharts";
 import { format } from "date-fns";
+import { useCurrency } from "../../context/CurrencyContext";
 
 const MonthlyPerformanceChart = ({ trades }) => {
+  const { formatCurrency } = useCurrency();
   // Custom label to show trade count on bars
   const renderCustomLabel = (props) => {
     const { x, y, width, value, trades } = props;
@@ -105,7 +107,7 @@ const MonthlyPerformanceChart = ({ trades }) => {
               tick={{ fill: "#ebdbb2" }}
               tickLine={{ stroke: "#504945" }}
               axisLine={{ stroke: "#504945" }}
-              tickFormatter={(value) => `$${value.toLocaleString()}`}
+              tickFormatter={(value) => formatCurrency(value)}
               className="text-text-secondary"
             />
             <Tooltip
@@ -118,7 +120,7 @@ const MonthlyPerformanceChart = ({ trades }) => {
               }}
               formatter={(value, name, props) => {
                 if (name === "pnl") {
-                  return [`$${value.toLocaleString()}`, "P&L"];
+                  return [formatCurrency(value), "P&L"];
                 }
                 return [value, name];
               }}

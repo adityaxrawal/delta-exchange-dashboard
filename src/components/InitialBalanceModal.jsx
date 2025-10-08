@@ -1,5 +1,6 @@
 // src/components/InitialBalanceModal.jsx
 import React, { useState, useEffect } from "react";
+import { useCurrency } from "../context/CurrencyContext";
 
 const InitialBalanceModal = ({
   isVisible,
@@ -7,6 +8,7 @@ const InitialBalanceModal = ({
   onCancel,
   suggestedBalance,
 }) => {
+  const { formatCurrency, currency, getCurrencySymbol } = useCurrency();
   const [balance, setBalance] = useState("785");
   const [error, setError] = useState("");
 
@@ -48,8 +50,10 @@ const InitialBalanceModal = ({
           </h2>
           <p className="text-sm text-text-secondary">
             {suggestedBalance
-              ? "This balance was automatically extracted from your deposit history. You can adjust it if needed."
-              : "Enter your wallet balance at the start of trading (in USD)"}
+              ? `This balance was automatically extracted from your deposit history. Suggested: ${formatCurrency(
+                  suggestedBalance
+                )}`
+              : `Enter your wallet balance at the start of trading (in ${currency})`}
           </p>
           {suggestedBalance && (
             <div className="mt-3 p-3 bg-green-500/10 border border-green-500/30 rounded-lg">
@@ -79,11 +83,11 @@ const InitialBalanceModal = ({
               htmlFor="initial-balance"
               className="block text-sm font-medium text-text-primary mb-2"
             >
-              Initial Balance ($)
+              Initial Balance ({getCurrencySymbol()})
             </label>
             <div className="relative">
               <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary text-lg">
-                $
+                {getCurrencySymbol()}
               </span>
               <input
                 id="initial-balance"

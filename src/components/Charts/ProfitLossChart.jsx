@@ -9,8 +9,10 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
+import { useCurrency } from "../../context/CurrencyContext";
 
 const ProfitLossChart = ({ trades, kpis }) => {
+  const { formatCurrency } = useCurrency();
   // Ensure we have valid initial balance
   if (!kpis?.initial_balance) {
     return (
@@ -53,7 +55,7 @@ const ProfitLossChart = ({ trades, kpis }) => {
           Balance Performance
         </h2>
         <p className="text-sm text-text-secondary">
-          Account balance from ${INITIAL_BALANCE.toLocaleString()} starting
+          Account balance from {formatCurrency(INITIAL_BALANCE)} starting
           capital
         </p>
       </div>
@@ -79,7 +81,7 @@ const ProfitLossChart = ({ trades, kpis }) => {
               tick={{ fill: "currentColor" }}
               tickLine={{ stroke: "#374151" }}
               axisLine={{ stroke: "#374151" }}
-              tickFormatter={(value) => `$${value.toLocaleString()}`}
+              tickFormatter={(value) => formatCurrency(value)}
               className="text-text-secondary"
             />
             <Tooltip
@@ -90,7 +92,7 @@ const ProfitLossChart = ({ trades, kpis }) => {
                 boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                 color: "rgb(226 232 240)",
               }}
-              formatter={(value) => [`$${value.toLocaleString()}`, "Balance"]}
+              formatter={(value) => [formatCurrency(value), "Balance"]}
             />
             <Line
               type="monotone"
