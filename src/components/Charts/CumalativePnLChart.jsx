@@ -9,8 +9,10 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { useCurrency } from "../../context/CurrencyContext";
 
 const CumulativePnLChart = ({ trades, kpis }) => {
+  const { formatCurrency } = useCurrency();
   // Ensure we have valid initial balance
   if (!kpis?.initial_balance) {
     return (
@@ -53,8 +55,7 @@ const CumulativePnLChart = ({ trades, kpis }) => {
           Wallet Balance Progression
         </h2>
         <p className="text-sm text-text-secondary">
-          Balance growth from ${INITIAL_BALANCE.toLocaleString()} initial
-          capital
+          Balance growth from {formatCurrency(INITIAL_BALANCE)} initial capital
         </p>
       </div>
       <div className="w-full h-[calc(100%-4rem)]">
@@ -85,7 +86,7 @@ const CumulativePnLChart = ({ trades, kpis }) => {
               tick={{ fill: "currentColor" }}
               tickLine={{ stroke: "#374151" }}
               axisLine={{ stroke: "#374151" }}
-              tickFormatter={(value) => `$${value.toLocaleString()}`}
+              tickFormatter={(value) => formatCurrency(value)}
               className="text-text-secondary"
             />
             <Tooltip
@@ -96,10 +97,7 @@ const CumulativePnLChart = ({ trades, kpis }) => {
                 boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                 color: "rgb(226 232 240)",
               }}
-              formatter={(value) => [
-                `$${value.toLocaleString()}`,
-                "Wallet Balance",
-              ]}
+              formatter={(value) => [formatCurrency(value), "Wallet Balance"]}
             />
             <Area
               type="monotone"

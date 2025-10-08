@@ -1,15 +1,8 @@
 import KPICard from "./KPICard";
+import { useCurrency } from "../context/CurrencyContext";
 
 export default function MetricsDashboard({ kpis = {} }) {
-  const formatCurrency = (value) => {
-    if (!value && value !== 0) return "$0.00";
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(value);
-  };
+  const { formatCurrency } = useCurrency();
 
   const formatINR = (value) => {
     if (!value && value !== 0) return "₹0.00";
@@ -38,6 +31,8 @@ export default function MetricsDashboard({ kpis = {} }) {
         <KPICard
           title="💰 Current Wallet Balance"
           value={formatCurrency(kpis.final_balance)}
+          isCurrency={true}
+          rawValue={kpis.final_balance}
           hint={`Your actual balance after all ${
             kpis.num_trades || 0
           } trades, fees, and funding`}
@@ -56,11 +51,15 @@ export default function MetricsDashboard({ kpis = {} }) {
         <KPICard
           title="Initial Deposit"
           value={formatCurrency(kpis.initial_balance)}
+          isCurrency={true}
+          rawValue={kpis.initial_balance}
           hint="Starting wallet balance from deposits"
         />
         <KPICard
           title="Total Net Change"
           value={formatCurrency(netProfitLoss)}
+          isCurrency={true}
+          rawValue={netProfitLoss}
           hint={`Change from ${formatCurrency(
             kpis.initial_balance
           )} to ${formatCurrency(kpis.final_balance)}`}
@@ -85,6 +84,8 @@ export default function MetricsDashboard({ kpis = {} }) {
         <KPICard
           title="Trade Cashflow"
           value={formatCurrency(kpis.total_net_pnl)}
+          isCurrency={true}
+          rawValue={kpis.total_net_pnl}
           hint={`${kpis.wins || 0}W / ${
             kpis.losses || 0
           }L (PnL from trades only, excluding fees)`}
@@ -93,15 +94,19 @@ export default function MetricsDashboard({ kpis = {} }) {
         <KPICard
           title="Trading Fees"
           value={formatCurrency(kpis.total_fees)}
+          isCurrency={true}
+          rawValue={kpis.total_fees}
           hint={
             kpis.total_gst
-              ? `Includes $${Math.abs(kpis.total_gst).toFixed(2)} GST`
+              ? `Includes ${formatCurrency(Math.abs(kpis.total_gst))} GST`
               : "Trading fees paid"
           }
         />
         <KPICard
           title="Funding Payments"
           value={formatCurrency(kpis.total_funding || 0)}
+          isCurrency={true}
+          rawValue={kpis.total_funding || 0}
           hint={
             kpis.funding_count
               ? `${kpis.funding_count} payments`
@@ -154,12 +159,16 @@ export default function MetricsDashboard({ kpis = {} }) {
         <KPICard
           title="Average Win"
           value={formatCurrency(kpis.avg_win || 0)}
+          isCurrency={true}
+          rawValue={kpis.avg_win || 0}
           hint="Average profit per winning trade"
           type="profit"
         />
         <KPICard
           title="Average Loss"
           value={formatCurrency(kpis.avg_loss || 0)}
+          isCurrency={true}
+          rawValue={kpis.avg_loss || 0}
           hint="Average loss per losing trade"
           type="loss"
         />

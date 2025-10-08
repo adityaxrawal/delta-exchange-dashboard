@@ -1,4 +1,15 @@
-export default function KPICard({ title, value, hint, type = "default" }) {
+import { useCurrency } from "../context/CurrencyContext";
+
+export default function KPICard({
+  title,
+  value,
+  hint,
+  type = "default",
+  isCurrency = false,
+  rawValue = null,
+}) {
+  const { formatCurrency } = useCurrency();
+
   const getValueColorClass = () => {
     switch (type) {
       case "profit":
@@ -10,6 +21,10 @@ export default function KPICard({ title, value, hint, type = "default" }) {
     }
   };
 
+  // If it's a currency field and we have raw value, format it dynamically
+  const displayValue =
+    isCurrency && rawValue !== null ? formatCurrency(rawValue) : value;
+
   return (
     <div className="bg-card p-6 rounded-xl shadow-lg border border-border/20 hover:bg-card-hover transition-all duration-200">
       <div className="text-sm font-medium text-text-secondary mb-2">
@@ -18,7 +33,7 @@ export default function KPICard({ title, value, hint, type = "default" }) {
       <div
         className={`text-2xl font-bold tracking-tight ${getValueColorClass()}`}
       >
-        {value}
+        {displayValue}
       </div>
       {hint && (
         <div className="text-sm text-text-tertiary mt-2 font-medium">
